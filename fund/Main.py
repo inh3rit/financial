@@ -1,11 +1,13 @@
 import json
-
-import requests
 import re
+import time
+
+import execjs
+import requests
 
 
-def trend_data():
-    res = requests.get('http://fund.eastmoney.com/pingzhongdata/001594.js?v=20191229155842')
+def trend_data(fund_code):
+    res = requests.get(get_url(fund_code))
     content = res.text
 
     data_list = content.split(';')
@@ -35,10 +37,35 @@ def all_fund():
     content = res.text
 
     fund_arr = json.loads(content.replace('var r = ', '').replace(';', ''))
-    print(len(fund_arr))
     for fund in fund_arr:
         print(fund)
 
+
+def get_url(fs_code):
+    head = 'http://fund.eastmoney.com/pingzhongdata/'
+    tail = '.js?v=' + time.strftime("%Y%m%d%H%M%S", time.localtime())
+    return head + fs_code + tail
+
+
+def get_detail(fs_code):
+    res = requests.get(get_url(fs_code))
+    content = res.text
+
+    # 使用execjs获取到相应的数据
+    js_content = execjs.compile(content)
+
+    # 基金持仓股票代码
+    stockCodes = js_content.eval('stockCodes')
+    print(stockCodes)
+
+    # 规模变动 mom-较上期环比，资产规模：最后一条记录
+    Data_fluctuationScale = js_content.eval('Data_fluctuationScale')
+    print(Data_fluctuationScale)
+
+
+
+
 if __name__ == '__main__':
-    all_fund()
-    # trend_data()
+    # all_fund()
+    # trend_data('001594')
+    get_detail('001594')
