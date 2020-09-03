@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.inh3rit.financial.dao.DemoDao">
+
+    <delete id="delById">
+        delete from desp_item where id = #{id};
+    </delete>
+</mapper>
