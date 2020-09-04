@@ -1,4 +1,6 @@
-package org.inh3rit.financial.kits;
+package org.inh3rit.financial.utils;
+
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -10,6 +12,10 @@ import java.util.stream.Collectors;
 
 public class HttpUtils {
     private static final HttpClient client = HttpClient.newBuilder().build();
+
+    public static HttpResponse get(String uri) throws IOException, InterruptedException {
+        return get(uri, null);
+    }
 
     public static HttpResponse get(String uri, Map<String, String> headers) throws IOException, InterruptedException {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -35,6 +41,7 @@ public class HttpUtils {
     }
 
     private static void setHeaders(HttpRequest.Builder builder, Map<String, String> headers) {
+        if (CollectionUtils.isEmpty(headers)) return;
         headers.forEach((k, v) -> builder.header(k, v));
     }
 }
